@@ -53,3 +53,18 @@ jobs:
       with:
         name: pa11y-report
         path: reports/pa11y-report.txt
+
+    # Run Lighthouse and generate a report
+    - name: Run Lighthouse
+      run: |
+        npm install -g @lhci/cli@0.8.x
+        lhci autorun --upload.target=temporary-public-storage || echo "Lighthouse failed"
+      env:
+        LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+    # Upload the Lighthouse report as an artifact
+    - name: Upload Lighthouse report
+      uses: actions/upload-artifact@v4
+      with:
+        name: lighthouse-report
+        path: .lighthouseci
